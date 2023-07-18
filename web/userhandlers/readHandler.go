@@ -28,29 +28,27 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// for mongodb
 	mongoRepo := repository.MongoRepository{
-		Client:     config.Client,
-		Collection: config.Collection,
+		Client: config.Client,
 	}
 
 	userFound := mongoRepo.FindUserFromDB(userId)
-
 	var resp usermodel.Response
-	resp = usermodel.Response{
-		StatusCode: 200,
-		Error:      "",
-		Message:    "User Found",
-		Data:       &userFound,
-	}
 
+	// if the user is not found
 	if userFound.UserName == "" {
-
 		resp = usermodel.Response{
 			StatusCode: 200,
 			Error:      "",
 			Message:    "User Not Found",
 			Data:       nil,
 		}
-
+	} else {
+		resp = usermodel.Response{
+			StatusCode: 200,
+			Error:      "",
+			Message:    "User Found",
+			Data:       &userFound,
+		}
 	}
 	w.WriteHeader(http.StatusOK)
 

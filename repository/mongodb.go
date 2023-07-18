@@ -16,29 +16,38 @@ type MongoRepository struct {
 	Collection *mongo.Collection
 }
 
-func (m *MongoRepository) AddUserInDB(newUser userModel.User) {
+func check(m *MongoRepository) *mongo.Collection {
+	if m.Collection == nil {
+		return m.Client.Database("usersDB").Collection("userInfo")
+	}
+	return m.Collection
+}
+func (m *MongoRepository) AddUserInDB(newUser userModel.User) error {
 	// storing into mongodb
+	m.Collection = check(m)
 	user := bson.D{{Key: "userId", Value: newUser.UserId}, {Key: "userName", Value: newUser.UserName}, {Key: "userAge", Value: newUser.UserAge}, {Key: "userLocation", Value: newUser.UserLocation}}
 
 	result, err := m.Collection.InsertOne(context.TODO(), user)
+	zap.L().Debug("InsertOne function called")
 	if err != nil {
-		zap.L().Error("Error inserting document into mongodb")
+		return err
 	}
-
 	zap.L().Info(fmt.Sprintf("User with id %v inserted ", result.InsertedID))
+	return nil
 }
 
 func (m *MongoRepository) FindUserFromDB(userId string) userModel.User {
 	// find from mongodb
+	m.Collection = check(m)
 	var u userModel.User
 	userIdInt, err := strconv.Atoi(userId)
 	if err != nil {
 		zap.L().Error("Error converting string to int", zap.Error(err))
 	}
-	fmt.Println(userIdInt)
+
 	filter := bson.D{{Key: "userId", Value: userIdInt}}
 	err = m.Collection.FindOne(context.TODO(), filter).Decode(&u)
-	fmt.Println(u)
+	zap.L().Debug("FindOne function called")
 	if err != nil {
 		zap.L().Error("Error finding the user", zap.Error(err))
 	}

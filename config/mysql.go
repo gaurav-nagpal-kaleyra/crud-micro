@@ -3,6 +3,7 @@ package config
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/zap"
@@ -12,14 +13,14 @@ var DB *sql.DB
 var err error
 
 func MySqlConnection() error {
-	const (
-		username = "root"
-		password = "tiger2001"
-		hostname = "127.0.0.1:3306"
-		dbname   = "usersDB"
-	)
+	connectionString := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?parseTime=true",
+		os.Getenv("MYSQL_USER"),
+		os.Getenv("MYSQL_PASS"),
+		os.Getenv("MYSQL_HOST"),
+		os.Getenv("MYSQL_PORT"),
+		os.Getenv("MYSQL_DBNAME"))
 	// "mysql", "root:tiger2001@tcp(127.0.0.1:3306)/usersDB"
-	DB, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, hostname, dbname))
+	DB, err = sql.Open("mysql", connectionString)
 
 	if err != nil {
 		zap.L().Error("Error while establishing connection to database", zap.Error(err))

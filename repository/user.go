@@ -12,15 +12,15 @@ type UserRepository struct {
 	Db *sql.DB
 }
 
-func (r *UserRepository) AddUserInDB(newUser userModel.User) {
+func (r *UserRepository) AddUserInDB(newUser userModel.User) error {
 
 	// storing into mysql
 	query := "INSERT INTO userInfo(id, userName, userAge, userLocation) VALUES(?,?,?,?)"
 	_, err := r.Db.Exec(query, newUser.UserId, newUser.UserName, newUser.UserAge, newUser.UserLocation)
 	if err != nil {
-		zap.L().Error("Error inserting into mysql database", zap.Error(err))
+		return err
 	}
-
+	return nil
 }
 
 func (r *UserRepository) FindUserFromDB(userId string) userModel.User {

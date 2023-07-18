@@ -14,7 +14,6 @@ import (
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
 
 	var user userModel.User
 
@@ -23,27 +22,38 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 		zap.L().Error("Unable to decode request body ", zap.Error(err))
 	}
 
-	// from the mysql
+	// sql
 	// userRepo := repository.UserRepository{
 	// 	Db: config.DB,
 	// }
 
 	// userRepo.AddUserInDB(user)
 
-	// from the mongodb
+	// mongodb
 	mongoRepo := repository.MongoRepository{
-		Client:     config.Client,
-		Collection: config.Collection,
+		Client: config.Client,
 	}
-	mongoRepo.AddUserInDB(user)
+	err = mongoRepo.AddUserInDB(user)
+	var resp userModel.Response
+	if err != nil {
+		resp = userModel.Response{
+			StatusCode: 500,
+			Error:      "Error creating the user",
+			Message:    "Internal Server Error",
+			Data:       &user,
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		resp = userModel.Response{
+			StatusCode: 200,
+			Error:      "",
+			Message:    "User Created",
+			Data:       &user,
+		}
+		w.WriteHeader(http.StatusCreated)
+	}
 	zap.L().Debug("Called the AddUser service")
 
-	resp := userModel.Response{
-		StatusCode: 200,
-		Error:      "",
-		Message:    "User Created",
-		Data:       &user,
-	}
 	err = json.NewEncoder(w).Encode(resp)
 	if err != nil {
 		zap.L().Error("Unable to encode responses body ", zap.Error(err))
