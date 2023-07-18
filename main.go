@@ -27,6 +27,16 @@ func main() {
 	}
 	zap.L().Info(".env file load completed")
 
+	// mysql connection
+	if err := config.MySqlConnection(); err != nil {
+		zap.L().Fatal("There is some error connecting to mysqlDb", zap.Error(err))
+	}
+
+	// mongodb connection
+	if err := config.MongoDBConnection(); err != nil {
+		zap.L().Fatal("There is some error connecting to mongodb", zap.Error(err))
+	}
+
 	router.HandleFunc("/v1/health", health.HealthHandler).Methods("GET")
 	router.HandleFunc("/v1/user/create", user.CreateHandler).Methods("POST")
 	router.HandleFunc("/v1/user/read/", user.ReadHandler).Methods("GET")

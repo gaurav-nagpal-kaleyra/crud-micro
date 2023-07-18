@@ -2,8 +2,10 @@ package userhandlers
 
 import (
 	"encoding/json"
+	"firstExercise/config"
 	usermodel "firstExercise/model/user"
-	userservice "firstExercise/service/userService"
+	"firstExercise/repository"
+
 	"net/http"
 
 	"go.uber.org/zap"
@@ -17,7 +19,20 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 
 	zap.L().Debug("Calling the FindUser Service")
 
-	userFound := userservice.FindUser(userId)
+	// for sql
+	// userRepo := repository.UserRepository{
+	// 	Db: config.DB,
+	// }
+
+	// userFound := userRepo.FindUserFromDB(userId)
+
+	// for mongodb
+	mongoRepo := repository.MongoRepository{
+		Client:     config.Client,
+		Collection: config.Collection,
+	}
+
+	userFound := mongoRepo.FindUserFromDB(userId)
 
 	var resp usermodel.Response
 	resp = usermodel.Response{

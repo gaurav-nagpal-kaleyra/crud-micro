@@ -10,7 +10,7 @@ import (
 
 func TestCreateHandler(t *testing.T) {
 	var sentJson = []byte(`{
-		"id":10,
+		"userId":10,
 		"userName":"Anand",
 		"userAge":20,
 		"userLocation":"Bengaluru"

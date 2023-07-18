@@ -30,7 +30,6 @@ consider always versioning your endpoints, so that if you need to add a new func
 you can also consider having the handlers in a separate package (for instance web or api)
 
 
-
 Can you please proceed now adding a persistent layer?
 When storing the user info, please store it in a MySQL DB initially
 Later, have a similar method for storing the same info in a MongoDB

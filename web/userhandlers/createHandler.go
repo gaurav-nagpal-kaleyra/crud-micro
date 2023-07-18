@@ -2,14 +2,17 @@ package userhandlers
 
 import (
 	"encoding/json"
+	"firstExercise/config"
 	userModel "firstExercise/model/user"
-	userService "firstExercise/service/userService"
+	"firstExercise/repository"
+
 	"net/http"
 
 	"go.uber.org/zap"
 )
 
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 
@@ -20,8 +23,21 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 		zap.L().Error("Unable to decode request body ", zap.Error(err))
 	}
 
+	// from the mysql
+	// userRepo := repository.UserRepository{
+	// 	Db: config.DB,
+	// }
+
+	// userRepo.AddUserInDB(user)
+
+	// from the mongodb
+	mongoRepo := repository.MongoRepository{
+		Client:     config.Client,
+		Collection: config.Collection,
+	}
+	mongoRepo.AddUserInDB(user)
 	zap.L().Debug("Called the AddUser service")
-	userService.AddUser(user)
+
 	resp := userModel.Response{
 		StatusCode: 200,
 		Error:      "",
