@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"firstExercise/config"
 	usermodel "firstExercise/model/user"
+	"firstExercise/redis"
 	"firstExercise/repository"
 
 	"net/http"
@@ -17,21 +18,32 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 
 	userId := queryParams["userId"][0]
 
-	zap.L().Debug("Calling the FindUser Service")
+	var userFound usermodel.User
 
-	// for sql
-	// userRepo := repository.UserRepository{
-	// 	Db: config.DB,
-	// }
+	// first check in the redis cache
+	res, err := redis.ReadFromDBRedis(userId)
+	if err == nil {
+		userFound = res
+		zap.L().Info("Get from redisDB")
+	} else {
+		zap.L().Debug("Calling the FindUser Service")
 
-	// userFound := userRepo.FindUserFromDB(userId)
+		// for sql
+		// userRepo := repository.UserRepository{
+		// 	Db: config.DB,
+		// }
 
-	// for mongodb
-	mongoRepo := repository.MongoRepository{
-		Client: config.Client,
+		// userFound := userRepo.FindUserFromDB(userId)
+
+		// for mongodb
+
+		mongoRepo := repository.MongoRepository{
+			Client: config.Client,
+		}
+
+		userFound = mongoRepo.FindUserFromDB(userId)
 	}
 
-	userFound := mongoRepo.FindUserFromDB(userId)
 	var resp usermodel.Response
 
 	// if the user is not found
@@ -52,7 +64,7 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 
-	err := json.NewEncoder(w).Encode(resp)
+	err = json.NewEncoder(w).Encode(resp)
 
 	if err != nil {
 		zap.L().Error("Unabel to encode response body", zap.Error(err))

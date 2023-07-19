@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"firstExercise/config"
 	userModel "firstExercise/model/user"
+	"firstExercise/redis"
 	"firstExercise/repository"
 
 	"net/http"
@@ -29,11 +30,17 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	// userRepo.AddUserInDB(user)
 
+	// store into redis
+	if err := redis.AddIntoDBRedis(user); err != nil {
+		zap.L().Error("Error inserting into RedisDB", zap.Error(err))
+	}
+
 	// mongodb
 	mongoRepo := repository.MongoRepository{
 		Client: config.Client,
 	}
 	err = mongoRepo.AddUserInDB(user)
+
 	var resp userModel.Response
 	if err != nil {
 		resp = userModel.Response{

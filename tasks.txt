@@ -36,3 +36,6 @@ Later, have a similar method for storing the same info in a MongoDB
 Of course information retrieval should also happen from DB
 Feel free to use a local instance of MySQL and Mongo
 
+Once the comments are addressed, please consider storing the user info on redis, so that your APIs will provide faster responses if the data is available in the cache :
+
+Then we'll move to RabbitMQ

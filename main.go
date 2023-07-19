@@ -37,6 +37,13 @@ func main() {
 		zap.L().Fatal("There is some error connecting to mongodb", zap.Error(err))
 	}
 
+	// redis connection
+	err := config.RedisConnection()
+	if err != nil {
+		zap.L().Fatal("unable to connect redis ",
+			zap.Error(err))
+	}
+
 	router.HandleFunc("/v1/health", health.HealthHandler).Methods("GET")
 	router.HandleFunc("/v1/user/create", user.CreateHandler).Methods("POST")
 	router.HandleFunc("/v1/user/read/", user.ReadHandler).Methods("GET")
@@ -45,7 +52,7 @@ func main() {
 
 	zap.L().Info(fmt.Sprintf("Listening and Serving on : %s", os.Getenv("APP_PORT")))
 
-	err := http.ListenAndServe(fmt.Sprintf(":%v", os.Getenv("APP_PORT")), router)
+	err = http.ListenAndServe(fmt.Sprintf(":%v", os.Getenv("APP_PORT")), router)
 
 	if err != nil {
 		zap.L().Error("Listening and Serving Error", zap.Error(err))
