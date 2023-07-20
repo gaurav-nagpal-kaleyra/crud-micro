@@ -44,6 +44,8 @@ func main() {
 			zap.Error(err))
 	}
 
+	// rabbit mq connection
+
 	router.HandleFunc("/v1/health", health.HealthHandler).Methods("GET")
 	router.HandleFunc("/v1/user/create", user.CreateHandler).Methods("POST")
 	router.HandleFunc("/v1/user/read/", user.ReadHandler).Methods("GET")

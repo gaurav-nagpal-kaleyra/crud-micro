@@ -39,3 +39,13 @@ Feel free to use a local instance of MySQL and Mongo
 Once the comments are addressed, please consider storing the user info on redis, so that your APIs will provide faster responses if the data is available in the cache :
 
 Then we'll move to RabbitMQ
+
+Every time a user is created a message is pushed to a queue called users_queue
+You'll need to then create a consumer that will subscribe to that queue and consumer the messages.
+When the message is received, it's enough to print a log "User Added"
+9:44
+To start the consumer, your main file will accept a flag parameter
+"api" will start the server
+"consumer" will start the consumer
+9:45
+Please do these changes in a separate branch of your repo and open a PR for me to review
