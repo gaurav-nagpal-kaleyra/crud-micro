@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"firstExercise/config"
 	userModel "firstExercise/model/user"
+	"firstExercise/rabbitmq"
 	"firstExercise/redis"
 	"firstExercise/repository"
+	"fmt"
+	"os"
 
 	"net/http"
 
@@ -58,6 +61,19 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 			Data:       &user,
 		}
 		w.WriteHeader(http.StatusCreated)
+
+		// whenever the user is created, message is published to the users_queue
+		rmqBody, err := json.Marshal("User Added")
+		if err != nil {
+			zap.L().Error("Publish To Queue - Error in Marshalling")
+		}
+
+		err = rabbitmq.PublishToQueue(os.Getenv("USERS_QUEUE"),
+			rmqBody, "")
+
+		if err != nil {
+			zap.L().Error(fmt.Sprintf("Error in publishing the message to %s queue", os.Getenv("USERS_QUEUE")))
+		}
 	}
 	zap.L().Debug("Called the AddUser service")
 
