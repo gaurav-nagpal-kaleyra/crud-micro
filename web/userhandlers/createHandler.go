@@ -31,7 +31,7 @@ func CreateHandler(w http.ResponseWriter, r *http.Request) {
 	// userRepo.AddUserInDB(user)
 
 	// store into redis
-	if err := redis.AddIntoDBRedis(user); err != nil {
+	if err := redis.AddIntoDBRedis(&user); err != nil {
 		zap.L().Error("Error inserting into RedisDB", zap.Error(err))
 	}
 

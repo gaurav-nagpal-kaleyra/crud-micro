@@ -4,34 +4,28 @@ import (
 	"encoding/json"
 	"firstExercise/config"
 	userModel "firstExercise/model/user"
+	"fmt"
 	"strconv"
 )
 
-func AddIntoDBRedis(newUser userModel.User) error {
+func AddIntoDBRedis(newUser *userModel.User) error {
 
-	// storing in redis hash
+	// storing in redis string
 	userId := strconv.Itoa(newUser.UserId)
 	json, err := json.Marshal(newUser)
 	if err != nil {
 		return err
 	}
-	return config.RedisConn.HSet("usersInfo", userId, json).Err()
+	return config.RedisConn.Set(fmt.Sprintf("usersInfo:%s", userId), json, 0).Err()
 
 }
 
 func ReadFromDBRedis(userId string) (userModel.User, error) {
 	var u userModel.User
 
-	val, err := config.RedisConn.HGet("usersInfo", userId).Result()
-	if err != nil {
-		return u, err
-	}
+	val, err := config.RedisConn.Get(fmt.Sprintf("usersInfo:%s", userId)).Result()
 
 	err = json.Unmarshal([]byte(val), &u)
 
-	if err != nil {
-		return u, err
-	}
-
-	return u, nil
+	return u, err
 }
