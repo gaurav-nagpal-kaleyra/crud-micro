@@ -24,7 +24,7 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 	res, err := redis.ReadFromDBRedis(userId)
 	if err == nil {
 		userFound = res
-		zap.L().Info("Get from redisDB")
+		zap.L().Info("Get from redisDB", zap.Any("User", userFound))
 	} else {
 		zap.L().Debug("Calling the FindUser Service")
 
