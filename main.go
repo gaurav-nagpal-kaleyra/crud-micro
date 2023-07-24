@@ -2,6 +2,7 @@ package main
 
 import (
 	"firstExercise/config"
+	"firstExercise/middleware"
 	health "firstExercise/web/health"
 	user "firstExercise/web/userHandlers"
 	"fmt"
@@ -43,7 +44,7 @@ func main() {
 		zap.L().Fatal("unable to connect redis ",
 			zap.Error(err))
 	}
-
+	router.Use(middleware.AddAuthKey)
 	router.HandleFunc("/v1/health", health.HealthHandler).Methods("GET")
 	router.HandleFunc("/v1/user/create", user.CreateHandler).Methods("POST")
 	router.HandleFunc("/v1/user/read/", user.ReadHandler).Methods("GET")

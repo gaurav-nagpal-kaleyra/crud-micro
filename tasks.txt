@@ -49,3 +49,9 @@ To start the consumer, your main file will accept a flag parameter
 "consumer" will start the consumer
 9:45
 Please do these changes in a separate branch of your repo and open a PR for me to review
+
+try to add a middleware to your apis that adds a key to the gorillamux context with the following value
+"authenticated": true
+in your api handlers try to fetch the key from the context.
+If it's present, continue with the handler logic
+if it's not present, return a 401 error
