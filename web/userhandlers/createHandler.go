@@ -18,6 +18,20 @@ import (
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	if isUserAuthenticated := r.Context().Value("authenticated"); isUserAuthenticated == false {
+		resp := userModel.Response{
+			StatusCode: 401,
+			Error:      "Error creating the user",
+			Message:    "User not authorized",
+			Data:       nil,
+		}
+		w.WriteHeader(http.StatusUnauthorized)
+		err := json.NewEncoder(w).Encode(resp)
+		if err != nil {
+			zap.L().Error("Unable to encode responses body ", zap.Error(err))
+		}
+		return
+	}
 
 	var user userModel.User
 

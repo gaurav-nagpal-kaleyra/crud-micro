@@ -2,7 +2,9 @@ package main
 
 import (
 	"firstExercise/config"
+
 	Consumer "firstExercise/consumer"
+
 	health "firstExercise/web/health"
 	user "firstExercise/web/userHandlers"
 	"flag"
@@ -58,6 +60,7 @@ func main() {
 		runHTTPServer()
 	}
 
+
 	if *consumer {
 		Consumer.ConsumeMessages()
 	}
@@ -66,6 +69,7 @@ func main() {
 
 func runHTTPServer() {
 	router := mux.NewRouter()
+
 	router.HandleFunc("/v1/health", health.HealthHandler).Methods("GET")
 	router.HandleFunc("/v1/user/create", user.CreateHandler).Methods("POST")
 	router.HandleFunc("/v1/user/read/", user.ReadHandler).Methods("GET")

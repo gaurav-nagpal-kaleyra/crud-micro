@@ -27,7 +27,7 @@ func (m *MongoRepository) AddUserInDB(newUser userModel.User) error {
 	m.Collection = check(m)
 	user := bson.D{{Key: "userId", Value: newUser.UserId}, {Key: "userName", Value: newUser.UserName}, {Key: "userAge", Value: newUser.UserAge}, {Key: "userLocation", Value: newUser.UserLocation}}
 
-	result, err := m.Collection.InsertOne(context.TODO(), user)
+	result, err := m.Collection.InsertOne(context.Background(), user)
 	zap.L().Debug("InsertOne function called")
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (m *MongoRepository) FindUserFromDB(userId string) userModel.User {
 	}
 
 	filter := bson.D{{Key: "userId", Value: userIdInt}}
-	err = m.Collection.FindOne(context.TODO(), filter).Decode(&u)
+	err = m.Collection.FindOne(context.Background(), filter).Decode(&u)
 	zap.L().Debug("FindOne function called")
 	if err != nil {
 		zap.L().Error("Error finding the user", zap.Error(err))
