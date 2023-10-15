@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 	"firstExercise/config"
 	userModel "firstExercise/model/user"
-	usermodel "firstExercise/model/user"
+
 	"firstExercise/redis"
 	"firstExercise/repository"
-
 	"net/http"
 
 	"go.uber.org/zap"
@@ -35,7 +34,7 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 
 	userId := queryParams["userId"][0]
 
-	var userFound usermodel.User
+	var userFound userModel.User
 
 	// first check in the redis cache
 	res, err := redis.ReadFromDBRedis(userId)
@@ -61,18 +60,18 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 		userFound = mongoRepo.FindUserFromDB(userId)
 	}
 
-	var resp usermodel.Response
+	var resp userModel.Response
 
 	// if the user is not found
 	if userFound.UserName == "" {
-		resp = usermodel.Response{
+		resp = userModel.Response{
 			StatusCode: 200,
 			Error:      "",
 			Message:    "User Not Found",
 			Data:       nil,
 		}
 	} else {
-		resp = usermodel.Response{
+		resp = userModel.Response{
 			StatusCode: 200,
 			Error:      "",
 			Message:    "User Found",
@@ -86,5 +85,4 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		zap.L().Error("Unabel to encode response body", zap.Error(err))
 	}
-
 }
