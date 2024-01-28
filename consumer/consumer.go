@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// consumer to consume the messaged from the users_queue
+// consumer to consume the messages from the users_queue
 
 func ConsumeMessages() {
 	msgs, err := config.RMQChan.Consume(

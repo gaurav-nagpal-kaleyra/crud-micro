@@ -2,11 +2,12 @@ package main
 
 import (
 	"crud-micro/config"
+	"crud-micro/middleware"
 
 	Consumer "crud-micro/consumer"
 
 	health "crud-micro/web/health"
-	user "crud-micro/web/userHandlers"
+	user "crud-micro/web/userhandlers"
 	"flag"
 	"fmt"
 	"log"
@@ -68,15 +69,19 @@ func main() {
 
 func runHTTPServer() {
 	router := mux.NewRouter()
-
+	r := router.PathPrefix("/").Subrouter()
 	router.HandleFunc("/v1/health", health.HealthHandler).Methods("GET")
-	router.HandleFunc("/v1/user/create", user.CreateHandler).Methods("POST")
-	router.HandleFunc("/v1/user/read/", user.ReadHandler).Methods("GET")
+	r.Use(middleware.JwtMiddleware)
 
+	// CRUD endpoints start
+	router.HandleFunc("/v1/user/create", user.CreateHandler).Methods("POST")
+	r.HandleFunc("/v1/user/read", user.ReadHandler).Methods("GET")
+	r.HandleFunc("/v1/user/update", user.UpdateHandler).Methods("PUT")
+	r.HandleFunc("/v1/user/delete", user.DeleteHandler).Methods("DELETE")
+	// CRUD endpoints end
 	fmt.Printf("Server started on port %v\n", os.Getenv("APP_PORT"))
 
 	zap.L().Info(fmt.Sprintf("Listening and Serving on : %s", os.Getenv("APP_PORT")))
 
 	_ = http.ListenAndServe(fmt.Sprintf(":%v", os.Getenv("APP_PORT")), router)
-
 }

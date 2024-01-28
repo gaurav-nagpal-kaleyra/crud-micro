@@ -36,7 +36,7 @@ func (m *MongoRepository) AddUserInDB(newUser userModel.User) error {
 	return nil
 }
 
-func (m *MongoRepository) FindUserFromDB(userId string) userModel.User {
+func (m *MongoRepository) FindUserFromDB(userId string) *userModel.User {
 	// find from mongodb
 	m.Collection = check(m)
 	var u userModel.User
@@ -52,5 +52,5 @@ func (m *MongoRepository) FindUserFromDB(userId string) userModel.User {
 		zap.L().Error("Error finding the user", zap.Error(err))
 	}
 
-	return u
+	return &u
 }

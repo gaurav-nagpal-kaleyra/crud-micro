@@ -15,26 +15,23 @@ import (
 func ReadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	if isUserAuthenticated := r.Context().Value("authenticated"); isUserAuthenticated == false {
+	userId := r.URL.Query().Get("userId")
+	if userId == "" {
+		zap.L().Debug("userId not passed")
+
 		resp := userModel.Response{
-			StatusCode: 401,
-			Error:      "Error creating the user",
-			Message:    "User not authorized",
+			StatusCode: 200,
+			Error:      "",
+			Message:    "Please pass userID",
 			Data:       nil,
 		}
-		w.WriteHeader(http.StatusUnauthorized)
-		err := json.NewEncoder(w).Encode(resp)
-		if err != nil {
-			zap.L().Error("Unable to encode responses body ", zap.Error(err))
-		}
+		w.WriteHeader(http.StatusOK)
+
+		json.NewEncoder(w).Encode(resp)
 		return
 	}
 
-	queryParams := r.URL.Query()
-
-	userId := queryParams["userId"][0]
-
-	var userFound userModel.User
+	var userFound *userModel.User
 
 	// first check in the redis cache
 	res, err := redis.ReadFromDBRedis(userId)
@@ -75,7 +72,7 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 			StatusCode: 200,
 			Error:      "",
 			Message:    "User Found",
-			Data:       &userFound,
+			Data:       userFound,
 		}
 	}
 	w.WriteHeader(http.StatusOK)

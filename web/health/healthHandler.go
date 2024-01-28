@@ -30,6 +30,6 @@ func HealthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func isServerHealthy() bool {
-	//currently we have no db connections, so returning true
+	// currently we have no db connections, so returning true
 	return true
 }
