@@ -2,11 +2,9 @@ package repository
 
 import (
 	"context"
-	"crud-micro/model"
 	userModel "crud-micro/model/user"
 	"fmt"
 	"strconv"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -55,56 +53,4 @@ func (m *MongoRepository) FindUserFromDB(userId string) userModel.User {
 	}
 
 	return u
-}
-
-func (m *MongoRepository) GetBTLDocumentCountBasedOnDate(startDate, endDate time.Time, companyID string) (int, error) {
-	m.Collection = m.Client.Database("usersDB").Collection("balance_transaction_log_testcompany")
-	filter := bson.D{
-		{
-			Key: "date",
-			Value: bson.D{
-				{Key: "$gte", Value: startDate},
-				{Key: "$lte", Value: endDate},
-			},
-		},
-	}
-	dbCount, err := m.Collection.CountDocuments(context.Background(), filter)
-	if err != nil {
-		return 0, err
-	}
-	return int(dbCount), nil
-}
-
-func (m *MongoRepository) FetchBtlDataForDumping(startDate, endDate time.Time, companyID string) ([]*model.BalanceTransaction, error) {
-	m.Collection = m.Client.Database("usersDB").Collection("balance_transaction_log_testcompany")
-	// filter := bson.D{
-	// 	{
-	// 		Key: "date",
-	// 		Value: bson.D{
-	// 			{Key: "$gte", Value: startDate},
-	// 			{Key: "$lte", Value: endDate},
-	// 		},
-	// 	},
-	// }
-	// pipeline := mongo.Pipeline{
-	// 	// add all the filters
-	// 	{{Key: "$match", Value: filter}},
-
-	// 	// sort on the basis of date
-	// 	{{Key: "$sort", Value: bson.D{
-	// 		{Key: "date", Value: 1},
-	// 	}}},
-	// }
-
-	btlData := []*model.BalanceTransaction{}
-
-	// cur, err := m.Collection.Aggregate(context.Background(), pipeline)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// if err := cur.All(context.Background(), &btlData); err != nil {
-	// 	return nil, err
-	// }
-	return btlData, nil
 }
