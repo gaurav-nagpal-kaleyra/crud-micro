@@ -12,7 +12,7 @@ type UserRepository struct {
 	Db *sql.DB
 }
 
-func (r *UserRepository) AddUserInDB(newUser userModel.User) error {
+func (r *UserRepository) AddUserInDB(newUser *userModel.User) error {
 
 	// storing into mysql
 	query := "INSERT INTO userInfo(id, userName, userAge, userLocation) VALUES(?,?,?,?)"
@@ -23,7 +23,7 @@ func (r *UserRepository) AddUserInDB(newUser userModel.User) error {
 	return nil
 }
 
-func (r *UserRepository) FindUserFromDB(userId string) userModel.User {
+func (r *UserRepository) FindUserFromDB(userId string) *userModel.User {
 
 	userIdInt, err := strconv.Atoi(userId)
 	if err != nil {
@@ -41,5 +41,20 @@ func (r *UserRepository) FindUserFromDB(userId string) userModel.User {
 		rows.Scan(&u.UserId, &u.UserName, &u.UserAge, &u.UserLocation)
 	}
 
-	return u
+	return &u
+}
+
+func (r *UserRepository) DeleteUserFromDB(userId string) error {
+	userIdInt, err := strconv.Atoi(userId)
+	if err != nil {
+		zap.L().Error("Error converting into int ", zap.Error(err))
+	}
+	//find from sql
+	query := `DELETE FROM userInfo where id = ? `
+	_, err = r.Db.Query(query, userIdInt)
+	if err != nil {
+		zap.L().Error("Error deleting from mysql database", zap.Error(err))
+		return err
+	}
+	return nil
 }

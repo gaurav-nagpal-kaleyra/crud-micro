@@ -55,8 +55,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = rabbitmq.PublishToQueue(os.Getenv(constant.UsersQueue), rmqBody, "")
-
+	err = rabbitmq.PublishToQueue(os.Getenv(constant.DeleteUsersQueue), rmqBody, "")
 	if err != nil {
 		zap.L().Error(fmt.Sprintf("Error in publishing the message to %s queue", os.Getenv("USERS_QUEUE")))
 	}

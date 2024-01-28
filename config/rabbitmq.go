@@ -1,6 +1,7 @@
 package config
 
 import (
+	"crud-micro/constant"
 	"fmt"
 	"os"
 
@@ -52,8 +53,21 @@ func rabbitMQConnection() (*amqp.Connection, error) {
 
 func declareQueues() error {
 	// declare the "users_queue"
-	_, err := RMQChan.QueueDeclare(
-		"users_queue",
+
+	// _, err := RMQChan.QueueDeclare(
+	// 	os.Getenv(constant.UsersQueue),
+	// 	true,
+	// 	false,
+	// 	false,
+	// 	false,
+	// 	nil,
+	// )
+	// if err != nil {
+	// 	zap.L().Error("Error declaring the users_queue", zap.Error(err))
+	// 	return err
+	// }
+	_, err = RMQChan.QueueDeclare(
+		os.Getenv(constant.DeleteUsersQueue),
 		true,
 		false,
 		false,
@@ -61,7 +75,7 @@ func declareQueues() error {
 		nil,
 	)
 	if err != nil {
-		zap.L().Error("Error declaring the users_queue", zap.Error(err))
+		zap.L().Error("Error declaring the delete_queue", zap.Error(err))
 		return err
 	}
 	return nil

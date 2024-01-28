@@ -22,7 +22,7 @@ func check(m *MongoRepository) *mongo.Collection {
 	}
 	return m.Collection
 }
-func (m *MongoRepository) AddUserInDB(newUser userModel.User) error {
+func (m *MongoRepository) AddUserInDB(newUser *userModel.User) error {
 	// storing into mongodb
 	m.Collection = check(m)
 	user := bson.D{{Key: "userId", Value: newUser.UserId}, {Key: "userName", Value: newUser.UserName}, {Key: "userAge", Value: newUser.UserAge}, {Key: "userLocation", Value: newUser.UserLocation}}
@@ -43,6 +43,7 @@ func (m *MongoRepository) FindUserFromDB(userId string) *userModel.User {
 	userIdInt, err := strconv.Atoi(userId)
 	if err != nil {
 		zap.L().Error("Error converting string to int", zap.Error(err))
+		return nil
 	}
 
 	filter := bson.D{{Key: "userId", Value: userIdInt}}
@@ -53,4 +54,16 @@ func (m *MongoRepository) FindUserFromDB(userId string) *userModel.User {
 	}
 
 	return &u
+}
+
+func (m *MongoRepository) DeleteUserFromDB(userID string) error {
+	m.Collection = check(m)
+	userIdInt, _ := strconv.Atoi(userID)
+	filter := bson.D{{Key: "userId", Value: userIdInt}}
+	_, err := m.Collection.DeleteOne(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

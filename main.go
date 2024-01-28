@@ -54,15 +54,21 @@ func main() {
 	}
 
 	api := flag.Bool("api", false, "For running server/publisher")
-	consumer := flag.Bool("consumer", false, "For running consumer")
+	usersConsumer := flag.Bool("users-consumer", false, "For running consumer")
+	deleteConsumer := flag.Bool("delete-consumer", false, "For running consumer")
 	flag.Parse()
 
 	if *api {
 		runHTTPServer()
 	}
 
-	if *consumer {
-		Consumer.ConsumeMessages()
+	if *usersConsumer {
+		Consumer.ConsumeMessagesUsersQueue()
+		return
+	}
+	if *deleteConsumer {
+		Consumer.ConsumeMessagesDeleteQueue()
+		return
 	}
 
 }

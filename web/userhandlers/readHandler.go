@@ -42,19 +42,20 @@ func ReadHandler(w http.ResponseWriter, r *http.Request) {
 		zap.L().Debug("Calling the FindUser Service")
 
 		// for sql
-		// userRepo := repository.UserRepository{
-		// 	Db: config.DB,
-		// }
-
-		// userFound := userRepo.FindUserFromDB(userId)
-
-		// for mongodb
-
-		mongoRepo := repository.MongoRepository{
-			Client: config.Client,
+		userRepo := repository.UserRepository{
+			Db: config.DB,
 		}
 
-		userFound = mongoRepo.FindUserFromDB(userId)
+		userFound = userRepo.FindUserFromDB(userId)
+
+		// for mongodb - if not found in mysql
+		if userFound == nil {
+			mongoRepo := repository.MongoRepository{
+				Client: config.Client,
+			}
+
+			userFound = mongoRepo.FindUserFromDB(userId)
+		}
 	}
 
 	var resp userModel.Response
