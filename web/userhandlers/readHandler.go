@@ -1,12 +1,12 @@
 package userhandlers
 
 import (
+	"crud-micro/config"
+	userModel "crud-micro/model/user"
 	"encoding/json"
-	"firstExercise/config"
-	userModel "firstExercise/model/user"
 
-	"firstExercise/redis"
-	"firstExercise/repository"
+	"crud-micro/redis"
+	"crud-micro/repository"
 	"net/http"
 
 	"go.uber.org/zap"

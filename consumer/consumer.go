@@ -1,7 +1,7 @@
 package consumer
 
 import (
-	"firstExercise/config"
+	"crud-micro/config"
 	"fmt"
 	"os"
 

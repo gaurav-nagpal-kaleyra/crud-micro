@@ -1,8 +1,8 @@
 package redis
 
 import (
-	"firstExercise/config"
-	userModel "firstExercise/model/user"
+	"crud-micro/config"
+	userModel "crud-micro/model/user"
 	"os"
 	"strconv"
 	"testing"

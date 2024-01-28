@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"firstExercise/model"
-	userModel "firstExercise/model/user"
+	"crud-micro/model"
+	userModel "crud-micro/model/user"
 	"fmt"
 	"strconv"
 	"time"

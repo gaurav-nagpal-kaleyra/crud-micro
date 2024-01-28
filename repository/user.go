@@ -1,8 +1,8 @@
 package repository
 
 import (
+	userModel "crud-micro/model/user"
 	"database/sql"
-	userModel "firstExercise/model/user"
 	"strconv"
 
 	"go.uber.org/zap"

@@ -1,12 +1,12 @@
 package userhandlers
 
 import (
+	"crud-micro/config"
+	userModel "crud-micro/model/user"
+	"crud-micro/rabbitmq"
+	"crud-micro/redis"
+	"crud-micro/repository"
 	"encoding/json"
-	"firstExercise/config"
-	userModel "firstExercise/model/user"
-	"firstExercise/rabbitmq"
-	"firstExercise/redis"
-	"firstExercise/repository"
 	"fmt"
 	"os"
 

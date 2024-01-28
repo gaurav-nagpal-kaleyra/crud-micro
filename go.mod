@@ -1,4 +1,4 @@
-module firstExercise
+module crud-micro
 
 go 1.20
 

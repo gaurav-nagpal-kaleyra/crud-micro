@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"firstExercise/config"
+	"crud-micro/config"
 	"log"
 	"os"
 	"testing"

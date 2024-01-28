@@ -1,7 +1,7 @@
 package rabbitmq
 
 import (
-	"firstExercise/config"
+	"crud-micro/config"
 	"fmt"
 
 	"github.com/streadway/amqp"

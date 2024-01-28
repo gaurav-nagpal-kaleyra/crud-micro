@@ -1,14 +1,14 @@
 package main
 
 import (
+	"crud-micro/config"
 	"encoding/json"
-	"firstExercise/config"
 	"math"
 
-	Consumer "firstExercise/consumer"
+	Consumer "crud-micro/consumer"
 
-	health "firstExercise/web/health"
-	user "firstExercise/web/userHandlers"
+	health "crud-micro/web/health"
+	user "crud-micro/web/userHandlers"
 	"flag"
 	"fmt"
 	"log"

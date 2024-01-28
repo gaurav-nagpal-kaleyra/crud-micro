@@ -1,9 +1,9 @@
 package redis
 
 import (
+	"crud-micro/config"
+	userModel "crud-micro/model/user"
 	"encoding/json"
-	"firstExercise/config"
-	userModel "firstExercise/model/user"
 	"fmt"
 	"strconv"
 )
